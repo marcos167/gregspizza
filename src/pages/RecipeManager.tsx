@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { ChefHat, Plus } from 'lucide-react';
-import { supabase, type Recipe, type Ingredient } from '../lib/supabase';
+import { supabase, type Recipe } from '../lib/supabase';
 
 const RecipeManager = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
-    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -24,13 +23,7 @@ const RecipeManager = () => {
             .select('*')
             .order('name');
 
-        const { data: ingredientsData } = await supabase
-            .from('ingredients')
-            .select('*')
-            .order('name');
-
         if (recipesData) setRecipes(recipesData);
-        if (ingredientsData) setIngredients(ingredientsData);
 
         setLoading(false);
     };

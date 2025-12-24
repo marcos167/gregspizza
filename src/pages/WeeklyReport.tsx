@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FileText, TrendingUp, TrendingDown, Lightbulb } from 'lucide-react';
-import { supabase, type WeeklyReport } from '../lib/supabase';
+import { supabase, type WeeklyReport as WeeklyReportType } from '../lib/supabase';
 
 const WeeklyReport = () => {
-    const [reports, setReports] = useState<WeeklyReport[]>([]);
+    const [reports, setReports] = useState<WeeklyReportType[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
