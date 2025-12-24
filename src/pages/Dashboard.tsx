@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { TrendingUp, Package, Pizza, AlertTriangle, Lightbulb } from 'lucide-react';
+import { TrendingUp, Package, Pizza, AlertTriangle, Lightbulb, Sparkles } from 'lucide-react';
 import { supabase, type Ingredient, type AIInsight } from '../lib/supabase';
+import { generateInventoryInsights } from '../services/ai';
 
 interface KPI {
     label: string;
@@ -14,6 +15,7 @@ const Dashboard = () => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [insights, setInsights] = useState<AIInsight[]>([]);
     const [loading, setLoading] = useState(true);
+    const [generatingAI, setGeneratingAI] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -29,7 +31,7 @@ const Dashboard = () => {
 
         if (ingredientsData) setIngredients(ingredientsData);
 
-        // Load AI insights
+        // Load AI insights from database
         const { data: insightsData } = await supabase
             .from('ai_insights')
             .select('*')
@@ -40,6 +42,48 @@ const Dashboard = () => {
         if (insightsData) setInsights(insightsData);
 
         setLoading(false);
+    };
+
+    // Generate AI insights in real-time
+    const generateAIInsights = async () => {
+        setGeneratingAI(true);
+        try {
+            // Fetch necessary data
+            const { data: sales } = await supabase
+                .from('stock_exits')
+                .select('*')
+                .order('timestamp', { ascending: false })
+                .limit(50);
+
+            const { data: recipes } = await supabase
+                .from('recipes')
+                .select('*');
+
+            // Generate insights using OpenAI
+            const generatedInsights = await generateInventoryInsights({
+                ingredients: ingredients,
+                sales: sales || [],
+                recipes: recipes || []
+            });
+
+            // Save insights to database
+            for (const insight of generatedInsights) {
+                await supabase.from('ai_insights').insert({
+                    title: insight.title,
+                    description: insight.description,
+                    insight_type: insight.category,
+                    priority: insight.priority,
+                    dismissed: false
+                });
+            }
+
+            // Reload insights
+            loadData();
+        } catch (error) {
+            console.error('Erro ao gerar insights:', error);
+            alert('Erro ao gerar insights com IA. Verifique a chave da API.');
+        }
+        setGeneratingAI(false);
     };
 
     // Calculate KPIs
@@ -184,9 +228,20 @@ const Dashboard = () => {
 
                 {/* AI Insights */}
                 <div className="card">
-                    <div className="flex items-center gap-md" style={{ marginBottom: 'var(--space-lg)' }}>
-                        <Lightbulb size={24} color="var(--warning)" />
-                        <h3 style={{ margin: 0 }}>Insights da IA</h3>
+                    <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-lg)' }}>
+                        <div className="flex items-center gap-md">
+                            <Lightbulb size={24} color="var(--warning)" />
+                            <h3 style={{ margin: 0 }}>Insights da IA</h3>
+                        </div>
+                        <button
+                            className="btn btn-primary"
+                            onClick={generateAIInsights}
+                            disabled={generatingAI || ingredients.length === 0}
+                            style={{ fontSize: '0.875rem', padding: 'var(--space-sm) var(--space-md)' }}
+                        >
+                            <Sparkles size={16} />
+                            {generatingAI ? 'Gerando...' : 'Gerar Insights'}
+                        </button>
                     </div>
                     {loading ? (
                         <div className="skeleton" style={{ height: '200px' }}></div>
