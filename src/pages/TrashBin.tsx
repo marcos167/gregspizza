@@ -1,4 +1,3 @@
-```javascript
 import { useState, useEffect } from 'react';
 import { Trash2, RotateCcw, X } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
@@ -88,25 +87,25 @@ const TrashBin = () => {
             {/* Filters */}
             <div className="trash-filters">
                 <button
-                    className={`filter - btn ${ filter === 'all' ? 'active' : '' } `}
+                    className={`filter - btn ${filter === 'all' ? 'active' : ''} `}
                     onClick={() => setFilter('all')}
                 >
                     Todos ({items.length})
                 </button>
                 <button
-                    className={`filter - btn ${ filter === 'recipe' ? 'active' : '' } `}
+                    className={`filter - btn ${filter === 'recipe' ? 'active' : ''} `}
                     onClick={() => setFilter('recipe')}
                 >
                     🍕 Receitas ({items.filter(i => i.item_type === 'recipe').length})
                 </button>
                 <button
-                    className={`filter - btn ${ filter === 'ingredient' ? 'active' : '' } `}
+                    className={`filter - btn ${filter === 'ingredient' ? 'active' : ''} `}
                     onClick={() => setFilter('ingredient')}
                 >
                     🧈 Ingredientes ({items.filter(i => i.item_type === 'ingredient').length})
                 </button>
                 <button
-                    className={`filter - btn ${ filter === 'category' ? 'active' : '' } `}
+                    className={`filter - btn ${filter === 'category' ? 'active' : ''} `}
                     onClick={() => setFilter('category')}
                 >
                     📁 Categorias ({items.filter(i => i.item_type === 'category').length})
@@ -174,7 +173,7 @@ const TrashBin = () => {
                     <p className="text-muted">
                         {filter === 'all'
                             ? 'Nenhum item na lixeira'
-                            : `Nenhum ${ getTypeLabel(filter).toLowerCase() } na lixeira`
+                            : `Nenhum ${getTypeLabel(filter).toLowerCase()} na lixeira`
                         }
                     </p>
                 </div>

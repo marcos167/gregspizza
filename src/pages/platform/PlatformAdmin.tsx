@@ -3,11 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Building2, Users, DollarSign, TrendingUp, Eye, Pause, Play, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-<<<<<<< HEAD
-import { validateAdminClient } from '../../lib/supabase';
-=======
 import { supabase, validateAdminClient } from '../../lib/supabase';
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
 import type { Tenant } from '../../contexts/TenantContext';
 import CreateTenantModal from './CreateTenantModal';
 import './PlatformAdmin.css';
@@ -32,11 +28,6 @@ const PlatformAdmin = () => {
     });
 
     useEffect(() => {
-<<<<<<< HEAD
-        // Security validation
-        if (profile?.role !== 'SUPER_ADMIN') {
-            console.error('[SECURITY] Non-SUPER_ADMIN attempted platform admin access');
-=======
         // ============================================
         // CRITICAL SECURITY: Platform Admin Validation
         // ============================================
@@ -44,16 +35,10 @@ const PlatformAdmin = () => {
         // 1. Validate SUPER_ADMIN role
         if (profile?.role !== 'SUPER_ADMIN') {
             console.error('[SECURITY] Non-SUPER_ADMIN attempted to access platform admin');
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
             navigate('/dashboard');
             return;
         }
 
-<<<<<<< HEAD
-        if (profile?.tenant_id) {
-            console.error('[SECURITY] Platform admin has tenant context');
-            toast.error('Erro de segurança detectado');
-=======
         // 2. Validate NO tenant context
         // Platform admin must NEVER have a tenant_id
         if (profile?.tenant_id) {
@@ -65,21 +50,10 @@ const PlatformAdmin = () => {
             // Clear any tenant context
             sessionStorage.removeItem('tenant_id');
             localStorage.removeItem('tenant_id');
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
             navigate('/dashboard');
             return;
         }
 
-<<<<<<< HEAD
-        try {
-            validateAdminClient();
-        } catch (error) {
-            console.error('[SECURITY] Admin client not configured');
-            toast.error('Cliente admin não configurado');
-            return;
-        }
-
-=======
         // 3. Validate admin client is available
         try {
             validateAdminClient();
@@ -90,7 +64,6 @@ const PlatformAdmin = () => {
         }
 
         // Load platform data
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
         loadTenants();
         loadStats();
     }, [profile, navigate, toast]);
