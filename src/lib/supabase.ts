@@ -1,20 +1,76 @@
+```typescript
 import { createClient } from '@supabase/supabase-js';
+import type { Database } from './database.types';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://pcmyscxqkthrilhazfrz.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbXlzY3hxa3RocmlsaGF6ZnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQyNzY2NzMsImV4cCI6MjA0OTg1MjY3M30.qFSrO0KtKvH5WaV_-L8zExGBrK7P4DajuJ6zvdYb9Ng';
+// ============================================
+// CRITICAL SECURITY: Two Separate Clients
+// ============================================
+//
+// 1. supabase (tenant client):
+//    - Uses anon key
+//    - Subject to RLS policies
+//    - Filters by tenant_id automatically
+//    - Used by ALL tenant-level operations
+//
+// 2. supabaseAdmin (platform client):
+//    - Uses service role key (bypasses RLS)
+//    - ONLY for platform admin operations
+//    - NEVER used within tenant context
+//    - Access controlled by SUPER_ADMIN role
+// ============================================
 
-if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-    console.warn('⚠️ Usando credenciais Supabase padrão - configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no Vercel');
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables (VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY)');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-        persistSession: true, // Persist session in localStorage
-        autoRefreshToken: true, // Auto refresh token before it expires
-        detectSessionInUrl: true, // Detect session from URL (email confirmation links)
-        storage: localStorage, // Use localStorage for persistence
-    }
+// ============================================
+// TENANT CLIENT (Default)
+// ============================================
+// Use this for ALL tenant-scoped operations
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true, // Persist session in localStorage
+    autoRefreshToken: true, // Auto refresh token before it expires
+    detectSessionInUrl: true, // Detect session from URL (email confirmation links)
+    storage: localStorage, // Use localStorage for persistence
+  },
 });
+
+// ============================================
+// PLATFORM ADMIN CLIENT (Service Role)
+// ============================================
+// ⚠️ WARNING: Bypasses ALL RLS policies!
+// ONLY use in:
+// - PlatformAdmin.tsx
+// - CreateTenantModal.tsx
+// - Platform-level operations
+//
+// NEVER use for:
+// - Tenant data queries
+// - User-facing operations
+// - Any operation within tenant context
+export const supabaseAdmin = supabaseServiceKey
+  ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    })
+  : null;
+
+// Validate admin client availability for platform operations
+export const validateAdminClient = () => {
+  if (!supabaseAdmin) {
+    throw new Error(
+      'SECURITY ERROR: supabaseAdmin not configured. Set VITE_SUPABASE_SERVICE_KEY in environment.'
+    );
+  }
+  return supabaseAdmin;
+};
 
 // Database Types
 export interface Ingredient {
