@@ -52,7 +52,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 // - Tenant data queries
 // - User-facing operations
 // - Any operation within tenant context
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
 
 export const supabaseAdmin = supabaseServiceKey
     ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
