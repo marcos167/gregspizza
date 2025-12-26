@@ -108,6 +108,46 @@ export default function Sidebar() {
 
                 {isAdmin && (
                     <>
+                        {/* Timeline */}
+                        <NavLink
+                            to="/timeline"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}
+                        >
+                            <History size={20} />
+                            Histórico
+                            <span style={{
+                                marginLeft: 'auto',
+                                fontSize: '0.65rem',
+                                padding: '2px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--gradient-primary)',
+                                fontWeight: 600
+                            }}>
+                                ADMIN
+                            </span>
+                        </NavLink>
+
+                        {/* Trash Bin */}
+                        <NavLink
+                            to="/trash"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}
+                        >
+                            <Trash2 size={20} />
+                            Lixeira
+                            <span style={{
+                                marginLeft: 'auto',
+                                fontSize: '0.65rem',
+                                padding: '2px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--gradient-primary)',
+                                fontWeight: 600
+                            }}>
+                                ADMIN
+                            </span>
+                        </NavLink>
+
                         <NavLink
                             to="/categories"
                             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}

@@ -12,6 +12,7 @@ import Users from './pages/Users';
 import Ingredients from './pages/Ingredients';
 import Categories from './pages/Categories';
 import Timeline from './pages/Timeline';
+import TrashBin from './pages/TrashBin';
 import Sidebar from './components/Sidebar';
 import CriticalStockBar from './components/CriticalStockBar';
 import FloatingAIButton from './components/AI/FloatingAIButton';
