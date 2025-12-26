@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { Users as UsersIcon, Shield, User, Mail, Calendar, Trash2 } from 'lucide-react';
-import ProtectedRoute from '../components/ProtectedRoute';
 
 interface UserProfile {
     id: string;
