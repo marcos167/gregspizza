@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, Send, Sparkles } from 'lucide-react';
+import { Send, X, Sparkles } from 'lucide-react';
+import './AIChatPanel.css';
+import ModeSelector from './ModeSelector';
+import type { AIMode } from './ModeSelector';
 
 interface Message {
     id: string;
@@ -14,21 +17,27 @@ interface AIChatPanelProps {
     onClose: () => void;
     messages: Message[];
     isTyping: boolean;
-    onSendMessage: (message: string) => void;
+    onSendMessage: (message: string, mode?: AIMode) => void;
 }
 
 const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIChatPanelProps) => {
     const [inputValue, setInputValue] = useState('');
+    const [mode, setMode] = useState<AIMode>('conversation');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // Placeholder for quickActions and handleQuickAction
+    // These were used in the JSX but not defined in the original snippet.
     const quickActions = [
-        { icon: '➕', text: 'Nova Receita', command: '/create recipe' },
-        { icon: '📁', text: 'Importar', command: '/import' },
-        { icon: '🗑️', text: 'Lixeira', command: '/trash show' },
-        { icon: '📊', text: 'Relatório', command: '/export sales' },
-        { icon: '🔔', text: 'Alertas', command: '/alerts' },
+        { command: 'summarize', icon: '📝', text: 'Summarize' },
+        { command: 'explain', icon: '💡', text: 'Explain' },
     ];
+
+    const handleQuickAction = (command: string) => {
+        console.log(`Quick action: ${command}`);
+        // Implement logic for quick actions, e.g., send a predefined message
+        onSendMessage(`/${command}`, mode);
+    };
 
     useEffect(() => {
         if (isOpen && inputRef.current) {
@@ -37,27 +46,29 @@ const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIC
     }, [isOpen]);
 
     useEffect(() => {
-        scrollToBottom();
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
-
     const handleSend = () => {
-        console.log('[AIChatPanel] handleSend called, inputValue:', inputValue);
-        if (!inputValue.trim()) {
-            console.log('[AIChatPanel] Input is empty, returning');
+        console.log('[AIChatPanel] handleSend called');
+        console.log('[AIChatPanel] inputValue:', inputValue);
+        console.log('[AIChatPanel] mode:', mode);
+
+        if (!inputValue.trim() || isTyping) {
+            console.log('[AIChatPanel] Blocked: empty input or loading');
             return;
         }
-        console.log('[AIChatPanel] Calling onSendMessage with:', inputValue);
-        onSendMessage(inputValue);
+
+        console.log('[AIChatPanel] Calling onSendMessage...');
+        onSendMessage(inputValue.trim(), mode);
         setInputValue('');
     };
 
-    const handleQuickAction = (command: string) => {
-        setInputValue(command);
-        inputRef.current?.focus();
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
     };
 
     if (!isOpen) return null;
@@ -119,16 +130,19 @@ const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIC
                     </div>
                     <button
                         onClick={onClose}
-                        className="btn btn-outline"
                         style={{
-                            padding: '8px',
-                            borderColor: 'rgba(255,255,255,0.3)',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
                             color: 'white',
                         }}
                     >
-                        <X size={20} />
+                        <X size={24} />
                     </button>
                 </div>
+
+                {/* Mode Selector */}
+                <ModeSelector mode={mode} onModeChange={setMode} />
 
                 {/* Quick Actions */}
                 <div

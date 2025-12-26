@@ -11,6 +11,7 @@ import WeeklyReport from './pages/WeeklyReport';
 import Users from './pages/Users';
 import Ingredients from './pages/Ingredients';
 import Categories from './pages/Categories';
+import Timeline from './pages/Timeline';
 import Sidebar from './components/Sidebar';
 import CriticalStockBar from './components/CriticalStockBar';
 import FloatingAIButton from './components/AI/FloatingAIButton';
@@ -95,6 +96,16 @@ function App() {
               <ProtectedRoute requireAdmin>
                 <AppLayout>
                   <Categories />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/timeline"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Timeline />
                 </AppLayout>
               </ProtectedRoute>
             }
