@@ -5,8 +5,8 @@ export interface PageContext {
     page: 'dashboard' | 'recipes' | 'stock' | 'sales' | 'ingredients' | 'categories' | 'timeline' | 'unknown';
     route: string;
     data?: any;
-    user?: User;
-    stock?: Stock;
+    user?: any; // TODO: Import proper User type
+    stock?: any; // TODO: Import proper Stock type
 }
 
 export interface Suggestion {
@@ -154,7 +154,7 @@ export class ContextEngine {
     /**
      * Dashboard suggestions
      */
-    private getDashboardSuggestions(context: PageContext): Suggestion[] {
+    private getDashboardSuggestions(_context: PageContext): Suggestion[] {
         const suggestions: Suggestion[] = [];
 
         // General health check
