@@ -1,4 +1,3 @@
-```typescript
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 
@@ -24,7 +23,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables (VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY)');
+    throw new Error('Missing Supabase environment variables (VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY)');
 }
 
 // ============================================
@@ -32,12 +31,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // ============================================
 // Use this for ALL tenant-scoped operations
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true, // Persist session in localStorage
-    autoRefreshToken: true, // Auto refresh token before it expires
-    detectSessionInUrl: true, // Detect session from URL (email confirmation links)
-    storage: localStorage, // Use localStorage for persistence
-  },
+    auth: {
+        persistSession: true, // Persist session in localStorage
+        autoRefreshToken: true, // Auto refresh token before it expires
+        detectSessionInUrl: true, // Detect session from URL (email confirmation links)
+        storage: localStorage, // Use localStorage for persistence
+    },
 });
 
 // ============================================
