@@ -1,0 +1,56 @@
+.tenant-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    background: linear-gradient(135deg,
+            var(--tenant-primary, var(--primary)) 0%,
+            var(--tenant-secondary, var(--secondary)) 100%);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    color: white;
+}
+
+.tenant-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    background: white;
+    padding: 4px;
+}
+
+.tenant-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex: 1;
+}
+
+.tenant-name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.tenant-plan-badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .tenant-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .tenant-info {
+        flex-direction: column;
+    }
+}

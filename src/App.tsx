@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { TenantProvider } from './contexts/TenantContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -24,114 +25,116 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+        <TenantProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-          {/* Protected Routes */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <Dashboard />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/entrada"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <StockEntry />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/saida"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <SalesEntry />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/receitas"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AppLayout>
-                  <RecipeManager />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ingredients"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <Ingredients />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/relatorio"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <WeeklyReport />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/categories"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AppLayout>
-                  <Categories />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/timeline"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <Timeline />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/trash"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <TrashBin />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/usuarios"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AppLayout>
-                  <Users />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            {/* Protected Routes */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Dashboard />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/entrada"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <StockEntry />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/saida"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <SalesEntry />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/receitas"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AppLayout>
+                    <RecipeManager />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ingredients"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Ingredients />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/relatorio"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <WeeklyReport />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AppLayout>
+                    <Categories />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/timeline"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <Timeline />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trash"
+              element={
+                <ProtectedRoute>
+                  <AppLayout>
+                    <TrashBin />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/usuarios"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AppLayout>
+                    <Users />
+                  </AppLayout>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </TenantProvider>
       </AuthProvider>
     </BrowserRouter>
   );

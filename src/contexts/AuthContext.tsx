@@ -1,89 +1,65 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import type { User, Session } from '@supabase/supabase-js';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 
-interface UserProfile {
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN_TENANT' | 'MANAGER' | 'STAFF';
+export type UserStatus = 'PENDING' | 'ACTIVE' | 'SUSPENDED' | 'BLOCKED';
+
+export interface UserProfile {
     id: string;
     email: string;
-    full_name: string | null;
-    role: 'admin' | 'employee';
-    avatar_url: string | null;
+    full_name?: string;
+    role: UserRole;
+    status: UserStatus;
+    tenant_id?: string;
+    created_at: string;
 }
 
 interface AuthContextType {
-    user: User | null;
+    user: any | null;
     profile: UserProfile | null;
-    session: Session | null;
+    loading: boolean;
     signIn: (email: string, password: string) => Promise<void>;
-    signUp: (email: string, password: string, fullName: string) => Promise<void>;
+    signUp: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
     isAdmin: boolean;
-    loading: boolean;
-    profileLoading: boolean;
+    isSuperAdmin: boolean;
+    isActive: boolean;
+    refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState<any | null>(null);
     const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
-    const [profileLoading, setProfileLoading] = useState(false);
 
     useEffect(() => {
-        let isMounted = true;
-
-        const initAuth = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-
-                if (!isMounted) return;
-
-                setSession(session);
-                setUser(session?.user ?? null);
-
-                // ✅ CRITICAL FIX: Set loading = false IMMEDIATELY after session loads
-                // User is authenticated if session exists, regardless of profile status
-                setLoading(false);
-
-                // Load profile in background (non-blocking)
-                if (session?.user) {
-                    loadProfile(session.user.id);
-                }
-            } catch (error) {
-                console.error('Auth init error:', error);
+        // Check active session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                loadProfile(session.user.id);
+            } else {
                 setLoading(false);
             }
-        };
-
-        initAuth();
+        });
 
         // Listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            async (_event, session) => {
-                if (!isMounted) return;
-
-                setSession(session);
-                setUser(session?.user ?? null);
-
-                if (session?.user) {
-                    loadProfile(session.user.id);
-                } else {
-                    setProfile(null);
-                    setProfileLoading(false);
-                }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            if (session?.user) {
+                loadProfile(session.user.id);
+            } else {
+                setProfile(null);
+                setLoading(false);
             }
-        );
+        });
 
-        return () => {
-            isMounted = false;
-            subscription.unsubscribe();
-        };
+        return () => subscription.unsubscribe();
     }, []);
 
     const loadProfile = async (userId: string) => {
-        setProfileLoading(true);
         try {
             const { data, error } = await supabase
                 .from('user_profiles')
@@ -91,17 +67,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 .eq('id', userId)
                 .single();
 
-            if (error) {
-                console.warn('Profile not found or error loading:', error.message);
-                setProfile(null);
-            } else if (data) {
-                setProfile(data);
-            }
+            if (error) throw error;
+            setProfile(data);
         } catch (error) {
-            console.warn('Error fetching profile:', error);
-            setProfile(null);
+            console.error('[AuthContext] Error loading profile:', error);
         } finally {
-            setProfileLoading(false);
+            setLoading(false);
+        }
+    };
+
+    const refreshProfile = async () => {
+        if (user) {
+            await loadProfile(user.id);
         }
     };
 
@@ -110,20 +87,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             email,
             password,
         });
+
         if (error) throw error;
     };
 
-    const signUp = async (email: string, password: string, fullName: string) => {
+    const signUp = async (email: string, password: string) => {
         const { error } = await supabase.auth.signUp({
             email,
             password,
-            options: {
-                data: {
-                    full_name: fullName,
-                    role: 'employee',
-                },
-            },
         });
+
         if (error) throw error;
     };
 
@@ -132,23 +105,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error) throw error;
         setUser(null);
         setProfile(null);
-        setSession(null);
     };
 
-    const value = {
-        user,
-        profile,
-        session,
-        signIn,
-        signUp,
-        signOut,
-        isAdmin: profile?.role === 'admin',
-        loading,
-        profileLoading,
-    };
+    // Computed properties
+    const isAdmin = profile?.role === 'ADMIN_TENANT' || profile?.role === 'SUPER_ADMIN';
+    const isSuperAdmin = profile?.role === 'SUPER_ADMIN';
+    const isActive = profile?.status === 'ACTIVE';
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+    return (
+        <AuthContext.Provider
+            value={{
+                user,
+                profile,
+                loading,
+                signIn,
+                signUp,
+                signOut,
+                isAdmin,
+                isSuperAdmin,
+                isActive,
+                refreshProfile
+            }}
+        >
+            {children}
+        </AuthContext.Provider>
+    );
+};
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
