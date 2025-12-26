@@ -23,16 +23,18 @@ const AIFloatingWidget = () => {
         setIsGenerating(true);
         try {
             const { data: ingredients } = await supabase.from('ingredients').select('*');
+            /*
             const { data: sales } = await supabase
                 .from('stock_exits')
                 .select('*')
                 .order('sale_date', { ascending: false })
                 .limit(50);
+            */
             const { data: recipes } = await supabase.from('recipes').select('*');
 
             const insights = await generateInventoryInsights({
                 ingredients: ingredients || [],
-                sales: sales || [],
+                sales: [], // sales data is commented out, so pass an empty array
                 recipes: recipes || []
             });
 
