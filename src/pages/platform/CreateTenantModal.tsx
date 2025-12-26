@@ -42,25 +42,20 @@ const CreateTenantModal = ({ onClose, onSuccess }: CreateTenantModalProps) => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            const { data, error } = await supabase.rpc('create_tenant', {
+            // Call enhanced auto-provisioning function
+            const { data, error } = await supabase.rpc('create_tenant_complete', {
                 p_slug: formData.slug,
                 p_name: formData.name,
                 p_owner_email: formData.owner_email,
-                p_plan: formData.plan
+                p_plan: formData.plan,
+                p_subdomain: formData.slug, // Use slug as subdomain for now
+                p_primary_color: formData.primary_color,
+                p_secondary_color: formData.secondary_color
             });
 
             if (error) throw error;
 
-            // Update branding
-            await supabase
-                .from('tenants')
-                .update({
-                    primary_color: formData.primary_color,
-                    secondary_color: formData.secondary_color
-                })
-                .eq('id', data);
-
-            toast.success('Tenant criado com sucesso!');
+            toast.success(`Tenant "${formData.name}" criado com sucesso! Auto-provisioning completo.`);
             onSuccess();
         } catch (error: any) {
             console.error('[CreateTenantModal] Error:', error);
