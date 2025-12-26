@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Building2, Users, DollarSign, TrendingUp, Eye, Pause, Play, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-import { supabase } from '../../lib/supabase';
+import { validateAdminClient } from '../../lib/supabase';
 import type { Tenant } from '../../contexts/TenantContext';
 import CreateTenantModal from './CreateTenantModal';
 import './PlatformAdmin.css';
@@ -15,6 +16,7 @@ interface TenantWithStats extends Tenant {
 const PlatformAdmin = () => {
     const { profile } = useAuth();
     const toast = useToast();
+    const navigate = useNavigate();
     const [tenants, setTenants] = useState<TenantWithStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -26,32 +28,52 @@ const PlatformAdmin = () => {
     });
 
     useEffect(() => {
-        if (profile?.role === 'SUPER_ADMIN') {
-            loadTenants();
-            loadStats();
+        // Security validation
+        if (profile?.role !== 'SUPER_ADMIN') {
+            console.error('[SECURITY] Non-SUPER_ADMIN attempted platform admin access');
+            navigate('/dashboard');
+            return;
         }
-    }, [profile]);
+
+        if (profile?.tenant_id) {
+            console.error('[SECURITY] Platform admin has tenant context');
+            toast.error('Erro de segurança detectado');
+            navigate('/dashboard');
+            return;
+        }
+
+        try {
+            validateAdminClient();
+        } catch (error) {
+            console.error('[SECURITY] Admin client not configured');
+            toast.error('Cliente admin não configurado');
+            return;
+        }
+
+        loadTenants();
+        loadStats();
+    }, [profile, navigate, toast]);
 
     const loadTenants = async () => {
         setLoading(true);
         try {
-            // Get all tenants
-            const { data: tenantsData, error } = await supabase
+            const adminClient = validateAdminClient();
+
+            const { data: tenantsData, error } = await adminClient
                 .from('tenants')
                 .select('*')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
 
-            // Load stats for each tenant
             const tenantsWithStats = await Promise.all(
                 (tenantsData || []).map(async (tenant) => {
-                    const { count: userCount } = await supabase
+                    const { count: userCount } = await adminClient
                         .from('user_profiles')
                         .select('*', { count: 'exact', head: true })
                         .eq('tenant_id', tenant.id);
 
-                    const { count: recipeCount } = await supabase
+                    const { count: recipeCount } = await adminClient
                         .from('recipes')
                         .select('*', { count: 'exact', head: true })
                         .eq('tenant_id', tenant.id)
@@ -68,6 +90,7 @@ const PlatformAdmin = () => {
             setTenants(tenantsWithStats);
         } catch (error) {
             console.error('[PlatformAdmin] Error loading tenants:', error);
+            toast.error('Erro ao carregar tenants');
         } finally {
             setLoading(false);
         }
@@ -75,16 +98,18 @@ const PlatformAdmin = () => {
 
     const loadStats = async () => {
         try {
-            const { count: totalTenants } = await supabase
+            const adminClient = validateAdminClient();
+
+            const { count: totalTenants } = await adminClient
                 .from('tenants')
                 .select('*', { count: 'exact', head: true });
 
-            const { count: activeTenants } = await supabase
+            const { count: activeTenants } = await adminClient
                 .from('tenants')
                 .select('*', { count: 'exact', head: true })
                 .eq('status', 'active');
 
-            const { count: totalUsers } = await supabase
+            const { count: totalUsers } = await adminClient
                 .from('user_profiles')
                 .select('*', { count: 'exact', head: true })
                 .eq('status', 'ACTIVE');
@@ -93,10 +118,11 @@ const PlatformAdmin = () => {
                 totalTenants: totalTenants || 0,
                 activeTenants: activeTenants || 0,
                 totalUsers: totalUsers || 0,
-                totalRevenue: 0 // Placeholder
+                totalRevenue: 0
             });
         } catch (error) {
             console.error('[PlatformAdmin] Error loading stats:', error);
+            toast.error('Erro ao carregar estatísticas');
         }
     };
 

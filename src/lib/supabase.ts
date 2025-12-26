@@ -16,6 +16,30 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     }
 });
 
+// ============================================
+// PLATFORM ADMIN CLIENT (Service Role)
+// ============================================
+// WARNING: Bypasses ALL RLS policies!
+// ONLY use in PlatformAdmin.tsx and CreateTenantModal.tsx
+// NEVER use for tenant-scoped operations
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+
+export const supabaseAdmin = supabaseServiceKey
+    ? createClient(supabaseUrl, supabaseServiceKey, {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+        }
+    })
+    : null;
+
+export const validateAdminClient = () => {
+    if (!supabaseAdmin) {
+        throw new Error('Admin client not configured. Set VITE_SUPABASE_SERVICE_KEY.');
+    }
+    return supabaseAdmin;
+};
+
 // Database Types
 export interface Ingredient {
     id: string;
