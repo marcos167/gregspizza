@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './ModeSelector.css';
 
 export type AIMode = 'conversation' | 'action';
