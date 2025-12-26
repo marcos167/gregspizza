@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { AIActionExecutor } from './aiActionExecutor';
 
 // Import types from correct path
 export interface AIResponse {
@@ -51,6 +52,7 @@ const openai = OPENAI_API_KEY ? new OpenAI({ apiKey: OPENAI_API_KEY, dangerously
 export class AIClient {
     private geminiModel: any;
     private openaiClient: OpenAI | null;
+    public actionExecutor: AIActionExecutor | null;
 
     constructor() {
         console.log('🔧 Initializing Dual AI Client...');
@@ -59,9 +61,14 @@ export class AIClient {
         if (geminiAI) {
             this.geminiModel = geminiAI.getGenerativeModel({ model: 'gemini-pro' });
             console.log('✅ Gemini API initialized (Primary)');
+
+            // Initialize action executor with Gemini model
+            this.actionExecutor = new AIActionExecutor(this.geminiModel);
+            console.log('✅ AI Action Executor initialized');
         } else {
             console.warn('⚠️ Gemini API key not found');
             this.geminiModel = null;
+            this.actionExecutor = null;
         }
 
         // Initialize OpenAI

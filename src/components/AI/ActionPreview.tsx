@@ -1,18 +1,17 @@
 import './ActionPreview.css';
 
 export interface ActionImpact {
-    stock?: string;
-    cost?: string;
-    recipes?: number;
-    warning?: string;
+    [key: string]: string;
 }
 
 export interface ActionPreviewData {
+    action: string;
     title: string;
     description: string;
     impact: ActionImpact;
-    preview: any;
-    actionType: string;
+    previewData?: any;
+    onConfirm?: () => Promise<boolean> | void;
+    onCancel?: () => void;
 }
 
 interface ActionPreviewProps {
@@ -24,10 +23,10 @@ interface ActionPreviewProps {
 
 const ActionPreview = ({ data, onConfirm, onCancel, isLoading = false }: ActionPreviewProps) => {
     const renderPreviewContent = () => {
-        if (Array.isArray(data.preview)) {
+        if (Array.isArray(data.previewData)) {
             return (
                 <div className="preview-list">
-                    {data.preview.map((item, idx) => (
+                    {data.previewData.map((item, idx) => (
                         <div key={idx} className="preview-item">
                             <h5>{item.name || item.title}</h5>
                             {item.description && <p>{item.description}</p>}
@@ -39,7 +38,7 @@ const ActionPreview = ({ data, onConfirm, onCancel, isLoading = false }: ActionP
 
         return (
             <pre className="preview-json">
-                {JSON.stringify(data.preview, null, 2)}
+                {JSON.stringify(data.previewData, null, 2)}
             </pre>
         );
     };
@@ -75,12 +74,12 @@ const ActionPreview = ({ data, onConfirm, onCancel, isLoading = false }: ActionP
                                 </div>
                             </div>
                         )}
-                        {data.impact.recipes !== undefined && (
+                        {data.impact.recipes && (
                             <div className="impact-item">
                                 <span className="impact-icon">🍕</span>
                                 <div>
                                     <strong>Receitas</strong>
-                                    <p>{data.impact.recipes} {data.impact.recipes === 1 ? 'receita' : 'receitas'}</p>
+                                    <p>{data.impact.recipes}</p>
                                 </div>
                             </div>
                         )}
