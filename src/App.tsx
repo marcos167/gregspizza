@@ -14,6 +14,7 @@ import Ingredients from './pages/Ingredients';
 import Categories from './pages/Categories';
 import Timeline from './pages/Timeline';
 import TrashBin from './pages/TrashBin';
+import PlatformAdmin from './pages/platform/PlatformAdmin';
 import Sidebar from './components/Sidebar';
 import CriticalStockBar from './components/CriticalStockBar';
 import FloatingAIButton from './components/AI/FloatingAIButton';
@@ -30,6 +31,16 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+
+            {/* Platform Admin (Super Admin only) */}
+            <Route
+              path="/platform/admin"
+              element={
+                <ProtectedRoute>
+                  <PlatformAdmin />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protected Routes */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
