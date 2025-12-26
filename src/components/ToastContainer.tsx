@@ -1,6 +1,6 @@
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
-import type { Toast, ToastType } from '../contexts/ToastContext';
+import type { ToastType } from '../contexts/ToastContext';
 import './ToastContainer.css';
 
 const ToastContainer = () => {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Building2, Mail, Globe, CreditCard } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
 import './CreateTenantModal.css';
 
@@ -9,6 +10,7 @@ interface CreateTenantModalProps {
 }
 
 const CreateTenantModal = ({ onClose, onSuccess }: CreateTenantModalProps) => {
+    const toast = useToast();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -58,11 +60,11 @@ const CreateTenantModal = ({ onClose, onSuccess }: CreateTenantModalProps) => {
                 })
                 .eq('id', data);
 
-            alert('✅ Tenant criado com sucesso!');
+            toast.success('Tenant criado com sucesso!');
             onSuccess();
         } catch (error: any) {
             console.error('[CreateTenantModal] Error:', error);
-            alert(`❌ Erro: ${error.message}`);
+            toast.error(`Erro: ${error.message}`);
         } finally {
             setLoading(false);
         }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Building2, Users, DollarSign, TrendingUp, Eye, Pause, Play, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
 import type { Tenant } from '../../contexts/TenantContext';
 import CreateTenantModal from './CreateTenantModal';
@@ -13,6 +14,7 @@ interface TenantWithStats extends Tenant {
 
 const PlatformAdmin = () => {
     const { profile } = useAuth();
+    const toast = useToast();
     const [tenants, setTenants] = useState<TenantWithStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -108,11 +110,11 @@ const PlatformAdmin = () => {
             });
 
             if (error) throw error;
-            alert('✅ Tenant suspenso com sucesso');
+            toast.success('Tenant suspenso com sucesso');
             loadTenants();
         } catch (error) {
             console.error('[PlatformAdmin] Error suspending tenant:', error);
-            alert('❌ Erro ao suspender tenant');
+            toast.error('Erro ao suspender tenant');
         }
     };
 
@@ -123,11 +125,11 @@ const PlatformAdmin = () => {
             });
 
             if (error) throw error;
-            alert('✅ Tenant ativado com sucesso');
+            toast.success('Tenant ativado com sucesso');
             loadTenants();
         } catch (error) {
             console.error('[PlatformAdmin] Error activating tenant:', error);
-            alert('❌ Erro ao ativar tenant');
+            toast.error('Erro ao ativar tenant');
         }
     };
 
