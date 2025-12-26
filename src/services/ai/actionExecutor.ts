@@ -21,9 +21,9 @@ export class ActionExecutor {
         const { data, error } = await supabase
             .from('pending_actions')
             .insert({
-                action_type: actionData.actionType,
+                action_type: actionData.action,
                 action_label: actionData.title,
-                preview_data: actionData.preview,
+                preview_data: actionData.previewData,
                 impact_summary: actionData.impact
             })
             .select()
