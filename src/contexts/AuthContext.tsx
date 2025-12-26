@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 
 export type UserRole = 'SUPER_ADMIN' | 'ADMIN_TENANT' | 'MANAGER' | 'STAFF';

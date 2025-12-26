@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
@@ -78,14 +79,6 @@ export const TenantProvider = ({ children }: { children: ReactNode }) => {
 
         // Update page title
         document.title = `${tenant.name} - Sistema de Gestão`;
-
-        // Update favicon if available
-        if (tenant.favicon_url) {
-            const favicon = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-            if (favicon) {
-                favicon.href = tenant.favicon_url;
-            }
-        }
     };
 
     const refreshTenant = async () => {
