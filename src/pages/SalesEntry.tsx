@@ -24,23 +24,6 @@ const SalesEntry = () => {
         setSelectedRecipe(recipe || null);
     }, [formData.product_name, recipes]);
 
-    const loadRecentSales = async () => {
-        try {
-            /*
-            const { data: stockData } = await supabase
-                .from('stock_exits')
-                .select('*')
-                .order('timestamp', { ascending: false })
-                .limit(10);
-
-            setRecentExits(stockData || []);
-            */
-            setRecentExits([]); // Placeholder
-        } catch (error) {
-            console.error('Error loading recent exits:', error);
-        }
-    };
-
     const loadRecipes = async () => {
         const { data } = await supabase
             .from('recipes')
@@ -88,6 +71,9 @@ const SalesEntry = () => {
         setSubmitting(true);
 
         try {
+            // Note: stock_exits table not yet implemented
+            // Sales tracking will be added in next phase
+            /*
             const { error } = await supabase
                 .from('stock_exits')
                 .insert({
@@ -98,8 +84,9 @@ const SalesEntry = () => {
                 });
 
             if (error) throw error;
+            */
 
-            alert('✅ Venda registrada com sucesso! Estoque atualizado.');
+            alert('✅ Venda registrada! (Funcionalidade em desenvolvimento)');
 
             // Reset form and reload recipes to update capacity
             setFormData({

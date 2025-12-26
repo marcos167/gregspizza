@@ -48,28 +48,7 @@ const Dashboard = () => {
     const generateAIInsights = async () => {
         setGeneratingAI(true);
         try {
-            // Fetch necessary data
-            // Load stock value
-            // Note: stock_exits table not yet implemented
-            /*
-            const { data: stockData } = await supabase
-                .from('stock_exits')
-                .select('value')
-                .gte('timestamp', new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString())
-                .order('timestamp', { ascending: false })
-                .limit(50);
-
-            const totalStock = (stockData || []).reduce((sum, item) => sum + (item.value || 0), 0);
-            */
-            const totalStock = 0; // Placeholder until stock_exits table is implemented
-            setStockValue(totalStock);
-
-            const { data: sales } = await supabase
-                .from('stock_exits')
-                .select('*')
-                .order('timestamp', { ascending: false })
-                .limit(50);
-
+            // Fetch necessary data (stock_exits table not yet implemented)
             const { data: recipes } = await supabase
                 .from('recipes')
                 .select('*');
@@ -77,7 +56,7 @@ const Dashboard = () => {
             // Generate insights using OpenAI
             const generatedInsights = await generateInventoryInsights({
                 ingredients: ingredients,
-                sales: sales || [],
+                sales: [], // stock_exits table not yet implemented
                 recipes: recipes || []
             });
 
