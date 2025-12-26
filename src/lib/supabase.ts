@@ -181,4 +181,3 @@ export interface IngredientWithAlert extends Ingredient {
     used_in_recipes_count?: number;
 }
 
-// EOF
