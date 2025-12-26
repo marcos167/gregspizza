@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 import { Users as UsersIcon, Shield, User, Mail, Calendar, Trash2 } from 'lucide-react';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 interface UserProfile {
     id: string;
@@ -11,8 +13,9 @@ interface UserProfile {
     created_at: string;
 }
 
-export default function Users() {
+const Users = () => {
     const { isAdmin } = useAuth();
+    const toast = useToast();
     const [users, setUsers] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,6 +37,7 @@ export default function Users() {
         }
         if (error) {
             console.error('Erro ao carregar usuários:', error);
+            toast.error('Erro ao carregar usuários.');
         }
         setLoading(false);
     };
@@ -45,17 +49,21 @@ export default function Users() {
             return;
         }
 
-        const { error } = await supabase
-            .from('user_profiles')
-            .update({ role: newRole })
-            .eq('id', userId);
+        try {
+            const { error } = await supabase
+                .from('user_profiles')
+                .update({ role: newRole })
+                .eq('id', userId);
 
-        if (error) {
-            alert('Erro ao atualizar cargo do usuário');
-            console.error(error);
-        } else {
-            alert('Cargo atualizado com sucesso!');
+            if (error) {
+                throw error;
+            }
+
+            toast.success('Cargo atualizado com sucesso!');
             loadUsers();
+        } catch (error: any) {
+            console.error('Error updating role:', error);
+            toast.error('Erro ao atualizar cargo do usuário');
         }
     };
 
@@ -64,17 +72,21 @@ export default function Users() {
             return;
         }
 
-        const { error } = await supabase
-            .from('user_profiles')
-            .delete()
-            .eq('id', userId);
+        try {
+            const { error } = await supabase
+                .from('user_profiles')
+                .delete()
+                .eq('id', userId);
 
-        if (error) {
-            alert('Erro ao deletar usuário');
-            console.error(error);
-        } else {
-            alert('Usuário deletado com sucesso!');
+            if (error) {
+                throw error;
+            }
+
+            toast.success('Usuário deletado com sucesso!');
             loadUsers();
+        } catch (error: any) {
+            console.error('Error deleting user:', error);
+            toast.error('Erro ao deletar usuário');
         }
     };
 

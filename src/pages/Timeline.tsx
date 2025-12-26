@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Clock, Filter, RotateCcw } from 'lucide-react';
+import { useToast } from '../contexts/ToastContext';
 import { supabase } from '../lib/supabase';
 import './Timeline.css';
 
@@ -22,6 +24,7 @@ interface TimelineFilters {
 }
 
 const Timeline = () => {
+    const toast = useToast();
     const [events, setEvents] = useState<TimelineEvent[]>([]);
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState<TimelineFilters>({
@@ -31,10 +34,10 @@ const Timeline = () => {
     });
 
     useEffect(() => {
-        fetchTimeline();
+        loadEvents();
     }, [filters]);
 
-    const fetchTimeline = async () => {
+    const loadEvents = async () => {
         setLoading(true);
         let query = supabase
             .from('operational_timeline')
@@ -74,35 +77,11 @@ const Timeline = () => {
         if (!event.metadata || !event.entity_id) return;
 
         try {
-            // Restore based on entity type
-            const table = event.entity_type === 'recipe' ? 'recipes' :
-                event.entity_type === 'ingredient' ? 'ingredients' : null;
-
-            if (!table) return;
-
-            const { error } = await supabase
-                .from(table)
-                .insert(event.metadata);
-
-            if (error) throw error;
-
-            // Log restore action
-            await supabase.rpc('log_timeline_event', {
-                p_user_id: (await supabase.auth.getUser()).data.user?.id,
-                p_action_type: 'restore',
-                p_entity_type: event.entity_type,
-                p_entity_id: event.entity_id,
-                p_entity_name: event.entity_name,
-                p_description: `Restaurado: ${event.entity_name}`,
-                p_metadata: event.metadata,
-                p_actor: 'user'
-            });
-
-            fetchTimeline();
-            alert('Item restaurado com sucesso!');
+            await supabase.rpc('restore_from_trash', { item_id: event.entity_id, table_name: event.entity_type });
+            toast.success('Item restaurado com sucesso!');
+            loadEvents();
         } catch (error) {
-            console.error('Error restoring:', error);
-            alert('Erro ao restaurar item');
+            toast.error('Erro ao restaurar item');
         }
     };
 

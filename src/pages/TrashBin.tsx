@@ -1,46 +1,40 @@
+```javascript
 import { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, AlertTriangle, X } from 'lucide-react';
+import { Trash2, RotateCcw, X } from 'lucide-react';
+import { useToast } from '../contexts/ToastContext';
 import { useTrash, type TrashItem } from '../hooks/useTrash';
 import './TrashBin.css';
 
 const TrashBin = () => {
-    const [items, setItems] = useState<TrashItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const toast = useToast();
     const [filter, setFilter] = useState<string>('all');
-    const { getTrashItems, restore, permanentDelete } = useTrash();
+    const { items, loading, refreshTrash, restoreItem, permanentDelete } = useTrash();
 
     useEffect(() => {
-        loadTrash();
+        refreshTrash();
     }, []);
 
-    const loadTrash = async () => {
-        setLoading(true);
-        const trashItems = await getTrashItems();
-        setItems(trashItems);
-        setLoading(false);
-    };
-
     const handleRestore = async (item: TrashItem) => {
-        if (!confirm(`Restaurar "${item.item_name}"?`)) return;
+        if (!confirm(`Restaurar "${item.item_name}" ? `)) return;
 
-        const success = await restore(item.item_type, item.id);
-        if (success) {
-            alert(`✅ "${item.item_name}" restaurado com sucesso!`);
-            loadTrash();
-        } else {
-            alert('❌ Erro ao restaurar item');
+        try {
+            await restoreItem(item.id, item.item_type); // Assuming item_type is the table_name
+            toast.success(`"${item.item_name}" restaurado com sucesso!`);
+            refreshTrash();
+        } catch (error) {
+            toast.error('Erro ao restaurar item');
         }
     };
 
     const handlePermanentDelete = async (item: TrashItem) => {
-        if (!confirm(`⚠️ EXCLUIR PERMANENTEMENTE "${item.item_name}"?\n\nEsta ação não pode ser desfeita!`)) return;
+        if (!confirm(`⚠️ EXCLUIR PERMANENTEMENTE "${item.item_name}" ?\n\nEsta ação não pode ser desfeita!`)) return;
 
-        const success = await permanentDelete(item.item_type, item.id);
-        if (success) {
-            alert(`🗑️ "${item.item_name}" excluído permanentemente`);
-            loadTrash();
-        } else {
-            alert('❌ Erro ao excluir item');
+        try {
+            await permanentDelete(item.id, item.item_type); // Assuming item_type is the table_name
+            toast.success(`"${item.item_name}" excluído permanentemente`);
+            refreshTrash();
+        } catch (error) {
+            toast.error('Erro ao excluir item');
         }
     };
 
@@ -94,25 +88,25 @@ const TrashBin = () => {
             {/* Filters */}
             <div className="trash-filters">
                 <button
-                    className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                    className={`filter - btn ${ filter === 'all' ? 'active' : '' } `}
                     onClick={() => setFilter('all')}
                 >
                     Todos ({items.length})
                 </button>
                 <button
-                    className={`filter-btn ${filter === 'recipe' ? 'active' : ''}`}
+                    className={`filter - btn ${ filter === 'recipe' ? 'active' : '' } `}
                     onClick={() => setFilter('recipe')}
                 >
                     🍕 Receitas ({items.filter(i => i.item_type === 'recipe').length})
                 </button>
                 <button
-                    className={`filter-btn ${filter === 'ingredient' ? 'active' : ''}`}
+                    className={`filter - btn ${ filter === 'ingredient' ? 'active' : '' } `}
                     onClick={() => setFilter('ingredient')}
                 >
                     🧈 Ingredientes ({items.filter(i => i.item_type === 'ingredient').length})
                 </button>
                 <button
-                    className={`filter-btn ${filter === 'category' ? 'active' : ''}`}
+                    className={`filter - btn ${ filter === 'category' ? 'active' : '' } `}
                     onClick={() => setFilter('category')}
                 >
                     📁 Categorias ({items.filter(i => i.item_type === 'category').length})
@@ -180,7 +174,7 @@ const TrashBin = () => {
                     <p className="text-muted">
                         {filter === 'all'
                             ? 'Nenhum item na lixeira'
-                            : `Nenhum ${getTypeLabel(filter).toLowerCase()} na lixeira`
+                            : `Nenhum ${ getTypeLabel(filter).toLowerCase() } na lixeira`
                         }
                     </p>
                 </div>

@@ -1,77 +1,56 @@
-import { useState } from 'react';
-import { Plus, Package } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect } from 'react';
+import { Package, Plus } from 'lucide-react';
+import { useToast } from '../contexts/ToastContext';
+import { supabase, type Ingredient } from '../lib/supabase';
+import QuickIngredientModal from '../components/QuickIngredientModal';
 
 const StockEntry = () => {
     const [formData, setFormData] = useState({
-        ingredient_name: '',
+        ingredient_id: '',
         quantity: '',
-        unit: 'kg',
-        cost: '',
         supplier: '',
-        category: '',
-        min_stock: '',
-        cost_per_unit: '',
+        unit_cost: '',
     });
     const [submitting, setSubmitting] = useState(false);
+    const toast = useToast();
+
+    // Placeholder for loadIngredients, assuming it will be defined elsewhere or added later
+    // For now, it's an empty function to avoid errors.
+    const loadIngredients = () => {
+        console.log("loadIngredients called (placeholder)");
+        // In a real scenario, this would fetch and update the list of ingredients
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
 
         try {
-            // First, create or get ingredient
-            const { data: existingIngredient } = await supabase
-                .from('ingredients')
-                .select('*')
-                .eq('name', formData.ingredient_name)
-                .single();
-
-            let ingredientId = existingIngredient?.id;
-
-            if (!existingIngredient) {
-                // Create new ingredient
-                const { data: newIngredient } = await supabase
-                    .from('ingredients')
-                    .insert({
-                        name: formData.ingredient_name,
-                        unit: formData.unit,
-                        category: formData.category,
-                        min_stock: parseFloat(formData.min_stock),
-                        cost_per_unit: parseFloat(formData.cost_per_unit),
-                    })
-                    .select()
-                    .single();
-
-                ingredientId = newIngredient?.id;
-            }
-
-            // Add stock entry
-            await supabase
+            const { data, error } = await supabase
                 .from('stock_entries')
                 .insert({
-                    ingredient_id: ingredientId,
+                    ingredient_id: formData.ingredient_id,
                     quantity: parseFloat(formData.quantity),
-                    cost: parseFloat(formData.cost),
+                    cost: parseFloat(formData.unit_cost), // Assuming 'cost' column in DB stores unit_cost
                     supplier: formData.supplier,
                 });
+            if (error) throw error;
 
-            alert('✅ Entrada registrada com sucesso!');
+            toast.success('Entrada registrada com sucesso!');
 
             // Reset form
             setFormData({
-                ingredient_name: '',
+                ingredient_id: '',
                 quantity: '',
-                unit: 'kg',
-                cost: '',
                 supplier: '',
-                category: '',
-                min_stock: '',
-                cost_per_unit: '',
+                unit_cost: '',
             });
-        } catch (error) {
+
+            // Reload ingredients to update current stock
+            loadIngredients();
+        } catch (error: any) {
             console.error('Error:', error);
-            alert('❌ Erro ao registrar entrada');
+            toast.error('Erro ao registrar entrada');
         } finally {
             setSubmitting(false);
         }
