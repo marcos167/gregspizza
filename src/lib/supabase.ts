@@ -42,27 +42,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 // ============================================
 // PLATFORM ADMIN CLIENT (Service Role)
 // ============================================
-<<<<<<< HEAD
-// WARNING: Bypasses ALL RLS policies!
-// ONLY use in PlatformAdmin.tsx and CreateTenantModal.tsx
-// NEVER use for tenant-scoped operations
-const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
-
-export const supabaseAdmin = supabaseServiceKey
-    ? createClient(supabaseUrl, supabaseServiceKey, {
-        auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-        }
-    })
-    : null;
-
-export const validateAdminClient = () => {
-    if (!supabaseAdmin) {
-        throw new Error('Admin client not configured. Set VITE_SUPABASE_SERVICE_KEY.');
-    }
-    return supabaseAdmin;
-=======
 // ⚠️ WARNING: Bypasses ALL RLS policies!
 // ONLY use in:
 // - PlatformAdmin.tsx
@@ -73,24 +52,25 @@ export const validateAdminClient = () => {
 // - Tenant data queries
 // - User-facing operations
 // - Any operation within tenant context
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+
 export const supabaseAdmin = supabaseServiceKey
-  ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
+    ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
+        auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+        },
     })
-  : null;
+    : null;
 
 // Validate admin client availability for platform operations
 export const validateAdminClient = () => {
-  if (!supabaseAdmin) {
-    throw new Error(
-      'SECURITY ERROR: supabaseAdmin not configured. Set VITE_SUPABASE_SERVICE_KEY in environment.'
-    );
-  }
-  return supabaseAdmin;
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
+    if (!supabaseAdmin) {
+        throw new Error(
+            'SECURITY ERROR: supabaseAdmin not configured. Set VITE_SUPABASE_SERVICE_KEY in environment.'
+        );
+    }
+    return supabaseAdmin;
 };
 
 // Database Types
