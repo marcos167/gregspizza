@@ -73,10 +73,7 @@ const PlatformAdmin = () => {
         try {
             const adminClient = validateAdminClient();
 
-<<<<<<< HEAD
-=======
             // Get all tenants (using admin client to bypass RLS)
->>>>>>> dbc80f659dcb07a88eb86ca475accf2cc3f9f301
             const { data: tenantsData, error } = await adminClient
                 .from('tenants')
                 .select('*')
