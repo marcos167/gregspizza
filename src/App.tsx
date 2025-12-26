@@ -112,6 +112,16 @@ function App() {
             }
           />
           <Route
+            path="/trash"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <TrashBin />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/usuarios"
             element={
               <ProtectedRoute requireAdmin>

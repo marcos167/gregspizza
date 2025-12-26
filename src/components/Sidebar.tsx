@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, PackagePlus, ShoppingCart, BookOpen, FileText, Users, LogOut, Tag } from 'lucide-react';
+import { LayoutDashboard, PackagePlus, ShoppingCart, BookOpen, FileText, Users, LogOut, Tag, Trash2, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Sidebar() {
@@ -114,7 +114,7 @@ export default function Sidebar() {
                             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                             style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}
                         >
-                            <History size={20} />
+                            <Package size={20} />
                             Histórico
                             <span style={{
                                 marginLeft: 'auto',
