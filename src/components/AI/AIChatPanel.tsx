@@ -3,6 +3,9 @@ import { Send, X, Sparkles } from 'lucide-react';
 import './AIChatPanel.css';
 import ModeSelector from './ModeSelector';
 import type { AIMode } from './ModeSelector';
+import ContextualSuggestions from './ContextualSuggestions';
+import { useContextDetection } from '../../hooks/useContextDetection';
+import type { Suggestion } from '../../services/ai/contextEngine';
 
 interface Message {
     id: string;
@@ -25,6 +28,22 @@ const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIC
     const [mode, setMode] = useState<AIMode>('conversation');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // Context detection for suggestions
+    const { suggestions } = useContextDetection();
+
+    // Handle suggestion clicks
+    const handleSuggestionClick = (suggestion: Suggestion) => {
+        console.log('[AIChatPanel] Suggestion clicked:', suggestion);
+
+        // If in action mode and has action, send the action command
+        if (mode === 'action' && suggestion.action) {
+            onSendMessage(`/${suggestion.action}`, mode);
+        } else {
+            // In conversation mode, just explain what it would do
+            onSendMessage(suggestion.text, mode);
+        }
+    };
 
     // Placeholder for quickActions and handleQuickAction
     // These were used in the JSX but not defined in the original snippet.
@@ -136,6 +155,14 @@ const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIC
 
                 {/* Mode Selector */}
                 <ModeSelector mode={mode} onModeChange={setMode} />
+
+                {/* Contextual Suggestions */}
+                {mode === 'action' && suggestions.length > 0 && (
+                    <ContextualSuggestions
+                        suggestions={suggestions}
+                        onSuggestionClick={handleSuggestionClick}
+                    />
+                )}
 
                 {/* Quick Actions */}
                 <div
