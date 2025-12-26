@@ -31,7 +31,7 @@ BEGIN
         ) VALUES (
             'gregs-pizza',
             'Greg''s Pizza',
-            'admin@gregspizza.com',  -- Change this!
+            'marco.lp12@hotmail.com',  -- Owner email
             'enterprise',            -- Full access for existing system
             'active',
             999,
@@ -58,7 +58,7 @@ END $$;
 DO $$ 
 DECLARE
     v_admin_user_id UUID;
-    v_admin_email TEXT := 'admin@gregspizza.com';  -- CHANGE THIS!
+    v_admin_email TEXT := 'marco.lp12@hotmail.com';  -- Your email
 BEGIN
     -- Find existing admin user
     SELECT id INTO v_admin_user_id
