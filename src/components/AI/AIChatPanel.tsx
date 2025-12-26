@@ -64,13 +64,6 @@ const AIChatPanel = ({ isOpen, onClose, messages, isTyping, onSendMessage }: AIC
         setInputValue('');
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
-
     if (!isOpen) return null;
 
     return (
