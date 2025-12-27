@@ -51,7 +51,7 @@ export default function Login() {
                 <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
                     <img
                         src="/logo.png"
-                        alt="Greg's Pizza"
+                        alt="EstokMax"
                         style={{ width: '100px', marginBottom: 'var(--space-lg)' }}
                     />
                     <h2 style={{ margin: 0, fontSize: '1.75rem' }}>Bem-vindo de volta!</h2>

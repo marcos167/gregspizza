@@ -31,7 +31,7 @@ export default function Sidebar() {
             }}>
                 <img
                     src="/logo.png"
-                    alt="Greg's Pizza"
+                    alt="EstokMax"
                     style={{
                         width: '120px',
                         display: 'block',

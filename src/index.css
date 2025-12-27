@@ -1,4 +1,4 @@
-/* Greg's Pizza - Premium Design System */
+/* EstokMax - Premium Design System */
 
 /* Reset & Base */
 * {
@@ -8,7 +8,7 @@
 }
 
 :root {
-  /* Primary - Greg's Pizzaria Brand Colors */
+  /* Primary - EstokMax Brand Colors */
   --primary: #D80000;
   /* Bold Red (pizza sauce) */
   --primary-light: #FF4444;
