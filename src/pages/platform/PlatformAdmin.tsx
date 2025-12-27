@@ -62,24 +62,26 @@ const PlatformAdmin = () => {
     const loadTenants = async () => {
         setLoading(true);
         try {
-            const adminClient = validateAdminClient();
-
-            // Get all tenants (using admin client to bypass RLS)
-            const { data: tenantsData, error } = await adminClient
+            // Use regular authenticated client - RLS policies handle SUPER_ADMIN access
+            const { data: tenantsData, error } = await supabase
                 .from('tenants')
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                console.error('[PlatformAdmin] Error loading tenants:', error);
+                toast.error('Erro ao carregar tenants');
+                throw error;
+            }
 
             const tenantsWithStats = await Promise.all(
                 (tenantsData || []).map(async (tenant) => {
-                    const { count: userCount } = await adminClient
+                    const { count: userCount } = await supabase
                         .from('user_profiles')
                         .select('*', { count: 'exact', head: true })
                         .eq('tenant_id', tenant.id);
 
-                    const { count: recipeCount } = await adminClient
+                    const { count: recipeCount } = await supabase
                         .from('recipes')
                         .select('*', { count: 'exact', head: true })
                         .eq('tenant_id', tenant.id)
@@ -104,18 +106,17 @@ const PlatformAdmin = () => {
 
     const loadStats = async () => {
         try {
-            const adminClient = validateAdminClient();
-
-            const { count: totalTenants } = await adminClient
+            // Use regular authenticated client - RLS policies handle SUPER_ADMIN access
+            const { count: totalTenants } = await supabase
                 .from('tenants')
                 .select('*', { count: 'exact', head: true });
 
-            const { count: activeTenants } = await adminClient
+            const { count: activeTenants } = await supabase
                 .from('tenants')
                 .select('*', { count: 'exact', head: true })
                 .eq('status', 'active');
 
-            const { count: totalUsers } = await adminClient
+            const { count: totalUsers } = await supabase
                 .from('user_profiles')
                 .select('*', { count: 'exact', head: true })
                 .eq('status', 'ACTIVE');
