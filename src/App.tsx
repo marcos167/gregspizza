@@ -17,6 +17,10 @@ import Categories from './pages/Categories';
 import Timeline from './pages/Timeline';
 import TrashBin from './pages/TrashBin';
 import Billing from './pages/Billing';
+import Pricing from './pages/Pricing';
+import PaymentSuccess from './pages/payment/Success';
+import PaymentPending from './pages/payment/Pending';
+import PaymentFailed from './pages/payment/Failed';
 import PlatformAdmin from './pages/platform/PlatformAdmin';
 import Sidebar from './components/Sidebar';
 import CriticalStockBar from './components/CriticalStockBar';
@@ -33,9 +37,15 @@ function App() {
           <ToastProvider>
             <ToastContainer />
             <Routes>
-              {/* Public Routes */}
+              {/* Public Routes - © Marco Antonio de Souza */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/pricing" element={<Pricing />} />
+
+              {/* Payment Result Pages - © Marco Antonio de Souza */}
+              <Route path="/payment/success" element={<PaymentSuccess />} />
+              <Route path="/payment/pending" element={<PaymentPending />} />
+              <Route path="/payment/failed" element={<PaymentFailed />} />
 
               {/* Platform Admin (Super Admin only) */}
               <Route
