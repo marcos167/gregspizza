@@ -400,11 +400,11 @@ const PlatformAdmin = () => {
             {selectedTenant && (
                 <TenantDetailsModal
                     tenant={selectedTenant}
-                    onClose={() => setSelected Tenant(null)}
-            onUpdate={() => {
-                loadTenants();
-                loadStats();
-            }}
+                    onClose={() => setSelectedTenant(null)}
+                    onUpdate={() => {
+                        loadTenants();
+                        loadStats();
+                    }}
                 />
             )}
         </div>
