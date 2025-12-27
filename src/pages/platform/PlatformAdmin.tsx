@@ -54,16 +54,7 @@ const PlatformAdmin = () => {
             return;
         }
 
-        // 3. Validate admin client is available
-        try {
-            validateAdminClient();
-        } catch (error: any) {
-            console.error('[SECURITY] Admin client not configured:', error);
-            toast.error('Erro: Cliente admin não configurado');
-            return;
-        }
-
-        // Load platform data
+        // Platform admin data loaded via RLS policies
         loadTenants();
         loadStats();
     }, [profile, navigate, toast]);
