@@ -1,3 +1,15 @@
+/**
+ * EstokMax - Recipe Manager with Plan Limits
+ * 
+ * @author Marco Antonio de Souza - https://marcosouza.dev
+ * @copyright © 2025 Marco Antonio de Souza. All rights reserved.
+ * @license Proprietary - Unauthorized copying or distribution is prohibited.
+ * 
+ * This code is the intellectual property of Marco Antonio de Souza.
+ * Any attempt to copy, modify, or distribute without explicit permission
+ * from the author is strictly forbidden and will be prosecuted.
+ */
+
 import { useState, useEffect } from 'react';
 import { ChefHat, Plus, AlertCircle } from 'lucide-react';
 import { supabase, type RecipeWithIngredients, type Ingredient } from '../lib/supabase';
@@ -6,14 +18,21 @@ import RecipeIngredientsModal from '../components/RecipeIngredientsModal';
 import InlineIngredientSelector, { type RecipeIngredientInput } from '../components/InlineIngredientSelector';
 import QuickIngredientModal from '../components/QuickIngredientModal';
 import CapacityDisplay from '../components/CapacityDisplay';
+import { usePlanLimits } from '../hooks/usePlanLimits';
+import { UpgradeModal } from '../components/UpgradeModal';
+import { useAuth } from '../contexts/AuthContext';
 
 const RecipeManager = () => {
+    const { tenant } = useAuth();
+    const { canAddRecipe } = usePlanLimits(tenant?.id);
+
     const [recipes, setRecipes] = useState<RecipeWithIngredients[]>([]);
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [showQuickIngredientModal, setShowQuickIngredientModal] = useState(false);
     const [selectedRecipe, setSelectedRecipe] = useState<RecipeWithIngredients | null>(null);
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         type: 'pizza' as 'pizza' | 'esfiha',
@@ -104,6 +123,12 @@ const RecipeManager = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // ✅ CHECK PLAN LIMIT - Marco Antonio de Souza - Proprietary Code
+        if (!canAddRecipe()) {
+            setShowUpgradeModal(true);
+            return;
+        }
 
         if (!validateForm()) {
             return;
@@ -412,6 +437,28 @@ const RecipeManager = () => {
                     recipe={selectedRecipe}
                     onClose={() => setSelectedRecipe(null)}
                     onUpdate={loadData}
+                />
+            )}
+
+            {/* Plan Limit Modal - © Marco Antonio de Souza */}
+            {showUpgradeModal && (
+                <UpgradeModal
+                    currentPlan={tenant?.plan || 'starter'}
+                    feature="adicionar mais receitas"
+                    onClose={() => setShowUpgradeModal(false)}
+                    onUpgrade={(plan) => {
+                        console.log('Upgrade to:', plan);
+                        // TODO: Redirect to billing page
+                        window.location.href = '/billing';
+                    }}
+                />
+            )}
+
+            {/* Quick Ingredient Creator - © Marco Antonio de Souza */}
+            {showQuickIngredientModal && (
+                <QuickIngredientModal
+                    onClose={() => setShowQuickIngredientModal(false)}
+                    onIngredientCreated={handleQuickIngredientCreated}
                 />
             )}
         </div>
