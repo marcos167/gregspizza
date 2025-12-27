@@ -51,7 +51,7 @@ export default function Signup() {
                 {/* Logo */}
                 <div style={{ textAlign: 'center', marginBottom: 'var(--space-2xl)' }}>
                     <img
-                        src="/logo.png"
+                        src="/logo.svg"
                         alt="EstokMax"
                         style={{ width: '100px', marginBottom: 'var(--space-lg)' }}
                     />

@@ -30,7 +30,7 @@ export default function Sidebar() {
                 borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
             }}>
                 <img
-                    src="/logo.png"
+                    src="/logo.svg"
                     alt="EstokMax"
                     style={{
                         width: '120px',
