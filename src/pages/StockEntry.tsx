@@ -7,9 +7,15 @@ import { supabase, type Ingredient } from '../lib/supabase';
 const StockEntry = () => {
     const [formData, setFormData] = useState({
         ingredient_id: '',
+        ingredient_name: '',
         quantity: '',
+        unit: 'kg',
+        category: '',
         supplier: '',
+        cost: '',
+        cost_per_unit: '',
         unit_cost: '',
+        min_stock: '',
     });
     const [submitting, setSubmitting] = useState(false);
     const toast = useToast();
@@ -41,9 +47,15 @@ const StockEntry = () => {
             // Reset form
             setFormData({
                 ingredient_id: '',
+                ingredient_name: '',
                 quantity: '',
+                unit: 'kg',
+                category: '',
                 supplier: '',
+                cost: '',
+                cost_per_unit: '',
                 unit_cost: '',
+                min_stock: '',
             });
 
             // Reload ingredients to update current stock

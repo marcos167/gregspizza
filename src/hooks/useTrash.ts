@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -12,6 +13,32 @@ export interface TrashItem {
 
 export const useTrash = () => {
     const { user } = useAuth();
+    const [items, setItems] = useState<TrashItem[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    /**
+     * Refresh trash items from database
+     */
+    const refreshTrash = useCallback(async () => {
+        if (!user) return;
+
+        setLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('trash_bin')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('deleted_at', { ascending: false });
+
+            if (error) throw error;
+            setItems(data || []);
+        } catch (err) {
+            console.error('[useTrash] Error fetching trash:', err);
+            setItems([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [user]);
 
     /**
      * Soft delete an item (move to trash)
@@ -40,7 +67,7 @@ export const useTrash = () => {
     /**
      * Restore an item from trash
      */
-    const restore = async (
+    const restoreItem = async (
         tableName: string,
         recordId: string
     ): Promise<boolean> => {
@@ -54,6 +81,9 @@ export const useTrash = () => {
             });
 
             if (error) throw error;
+
+            // Refresh after restore
+            await refreshTrash();
             return data;
         } catch (err) {
             console.error('[useTrash] Error restoring:', err);
@@ -78,6 +108,9 @@ export const useTrash = () => {
             });
 
             if (error) throw error;
+
+            // Refresh after delete
+            await refreshTrash();
             return data;
         } catch (err) {
             console.error('[useTrash] Error permanently deleting:', err);
@@ -127,9 +160,17 @@ export const useTrash = () => {
     };
 
     return {
-        softDelete,
-        restore,
+        // State
+        items,
+        loading,
+
+        // Actions with state
+        refreshTrash,
+        restoreItem,
         permanentDelete,
+
+        // Legacy functions (no state)
+        softDelete,
         getTrashItems,
         getTrashCount
     };
