@@ -107,25 +107,37 @@ const PlatformAdmin = () => {
     const loadStats = async () => {
         try {
             // Use regular authenticated client - RLS policies handle SUPER_ADMIN access
-            const { count: totalTenants } = await supabase
-                .from('tenants')
-                .select('*', { count: 'exact', head: true });
+            // Execute queries in parallel for performance
+            const [
+                { count: totalTenants },
+                { count: activeTenants },
+                { count: totalUsers },
+                { data: mrrData, error: mrrError }
+            ] = await Promise.all([
+                supabase
+                    .from('tenants')
+                    .select('*', { count: 'exact', head: true }),
+                supabase
+                    .from('tenants')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'active'),
+                supabase
+                    .from('user_profiles')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'ACTIVE')
+                    .not('tenant_id', 'is', null), // Exclude SUPER_ADMIN users
+                supabase.rpc('calculate_platform_mrr')
+            ]);
 
-            const { count: activeTenants } = await supabase
-                .from('tenants')
-                .select('*', { count: 'exact', head: true })
-                .eq('status', 'active');
-
-            const { count: totalUsers } = await supabase
-                .from('user_profiles')
-                .select('*', { count: 'exact', head: true })
-                .eq('status', 'ACTIVE');
+            if (mrrError) {
+                console.error('[PlatformAdmin] MRR calculation error:', mrrError);
+            }
 
             setStats({
                 totalTenants: totalTenants || 0,
                 activeTenants: activeTenants || 0,
                 totalUsers: totalUsers || 0,
-                totalRevenue: 0
+                totalRevenue: mrrData || 0 // MRR in centavos
             });
         } catch (error) {
             console.error('[PlatformAdmin] Error loading stats:', error);
@@ -250,7 +262,12 @@ const PlatformAdmin = () => {
                     </div>
                     <div className="stat-info">
                         <span className="stat-label">MRR</span>
-                        <span className="stat-value">R$ {stats.totalRevenue}</span>
+                        <span className="stat-value">
+                            {new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }).format((stats.totalRevenue || 0) / 100)}
+                        </span>
                     </div>
                 </div>
             </div>
