@@ -26,7 +26,7 @@ export default function Signup() {
         }
 
         try {
-            await signUp(email, password, fullName);
+            await signUp(email, password);
             setSuccess(true);
             setTimeout(() => {
                 navigate('/login');

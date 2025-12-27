@@ -247,10 +247,10 @@ export default function Sidebar() {
                             borderRadius: 'var(--radius-sm)',
                             fontSize: '0.65rem',
                             fontWeight: 600,
-                            background: profile.role === 'admin' ? 'var(--gradient-primary)' : 'rgba(255, 255, 255, 0.1)',
+                            background: (profile.role === 'ADMIN_TENANT' || profile.role === 'SUPER_ADMIN') ? 'var(--gradient-primary)' : 'rgba(255, 255, 255, 0.1)',
                             color: 'white'
                         }}>
-                            {profile.role === 'admin' ? '👑 ADMIN' : '👤 FUNCIONÁRIO'}
+                            {(profile.role === 'ADMIN_TENANT' || profile.role === 'SUPER_ADMIN') ? '👑 ADMIN' : '👤 FUNCIONÁRIO'}
                         </div>
                     </div>
                 )}

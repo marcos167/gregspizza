@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-    const { user, profile, loading, profileLoading } = useAuth();
+    const { user, profile, loading } = useAuth();
 
     // Show loading ONLY while checking session (very fast)
     if (loading) {
@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
                         height: '48px',
                         margin: '0 auto var(--space-md)',
                         borderRadius: '50%',
-
+                        border: '4px solid rgba(255, 255, 255, 0.1)',
                         borderTopColor: 'var(--primary)',
                         animation: 'spin 1s linear infinite'
                     }} />
@@ -40,25 +40,9 @@ export default function ProtectedRoute({ children, requireAdmin = false }: Prote
         return <Navigate to="/login" replace />;
     }
 
-    // For admin routes, check profile (show loading if profile still loading)
+    // For admin routes, check profile role
     if (requireAdmin) {
-        if (profileLoading) {
-            return (
-                <div style={{
-                    minHeight: '100vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'var(--bg-dark)'
-                }}>
-                    <div className="animate-pulse" style={{ textAlign: 'center' }}>
-                        <p style={{ color: 'var(--text-muted)' }}>Verificando permissões...</p>
-                    </div>
-                </div>
-            );
-        }
-
-        if (profile?.role !== 'admin') {
+        if (!profile || (profile.role !== 'ADMIN_TENANT' && profile.role !== 'SUPER_ADMIN')) {
             return <Navigate to="/dashboard" replace />;
         }
     }

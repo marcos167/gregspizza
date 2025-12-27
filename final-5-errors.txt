@@ -1,0 +1,9 @@
+﻿
+> gregspizza@0.0.0 build
+> tsc -b && vite build
+
+src/components/ProtectedRoute.tsx(10,37): error TS2339: Property 'profileLoading' does not exist on type 'AuthContextType'.
+src/components/ProtectedRoute.tsx(61,13): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/components/Sidebar.tsx(250,41): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/components/Sidebar.tsx(253,30): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/pages/Signup.tsx(29,43): error TS2554: Expected 2 arguments, but got 3.
