@@ -1,0 +1,45 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Main circle background -->
+  <circle cx="256" cy="256" r="240" fill="url(#grad)" filter="url(#shadow)"/>
+  
+  <!-- Box/Package icon -->
+  <g transform="translate(256, 200)">
+    <!-- Box front -->
+    <path d="M -80 -40 L 0 -80 L 80 -40 L 80 40 L 0 80 L -80 40 Z" 
+          fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Box top -->
+    <path d="M -80 -40 L 0 -80 L 0 0 L -80 40 Z" 
+          fill="#ffffff" opacity="0.7"/>
+    
+    <!-- Box side -->
+    <path d="M 80 -40 L 0 -80 L 0 0 L 80 40 Z" 
+          fill="#ffffff" opacity="0.5"/>
+    
+    <!-- Accent lines -->
+    <line x1="-80" y1="-40" x2="0" y2="0" stroke="#667eea" stroke-width="3"/>
+    <line x1="80" y1="-40" x2="0" y2="0" stroke="#667eea" stroke-width="3"/>
+    <line x1="0" y1="-80" x2="0" y2="0" stroke="#764ba2" stroke-width="4"/>
+  </g>
+  
+  <!-- Text: EstokMax -->
+  <text x="256" y="360" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="72" 
+        font-weight="bold" 
+        fill="#ffffff" 
+        text-anchor="middle">
+    EstokMax
+  </text>
+</svg>
