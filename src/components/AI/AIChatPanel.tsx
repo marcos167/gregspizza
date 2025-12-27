@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, X, Sparkles } from 'lucide-react';
-import './AIChatPanel.css';
 import ModeSelector from './ModeSelector';
 import type { AIMode } from './ModeSelector';
 import ContextualSuggestions from './ContextualSuggestions';
