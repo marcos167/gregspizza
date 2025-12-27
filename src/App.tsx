@@ -16,6 +16,7 @@ import Ingredients from './pages/Ingredients';
 import Categories from './pages/Categories';
 import Timeline from './pages/Timeline';
 import TrashBin from './pages/TrashBin';
+import Billing from './pages/Billing';
 import PlatformAdmin from './pages/platform/PlatformAdmin';
 import Sidebar from './components/Sidebar';
 import CriticalStockBar from './components/CriticalStockBar';
@@ -144,6 +145,16 @@ function App() {
                   <ProtectedRoute requireAdmin>
                     <AppLayout>
                       <Users />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/billing"
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AppLayout>
+                      <Billing />
                     </AppLayout>
                   </ProtectedRoute>
                 }

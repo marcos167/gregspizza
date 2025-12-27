@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, PackagePlus, ShoppingCart, BookOpen, FileText, Users, LogOut, Tag, Trash2, Package } from 'lucide-react';
+import { LayoutDashboard, PackagePlus, ShoppingCart, BookOpen, FileText, Users, LogOut, Tag, Trash2, Package, CreditCard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Sidebar() {
@@ -174,6 +174,25 @@ export default function Sidebar() {
                         >
                             <Users size={20} />
                             Usuários
+                            <span style={{
+                                marginLeft: 'auto',
+                                fontSize: '0.65rem',
+                                padding: '2px 6px',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--gradient-primary)',
+                                fontWeight: 600
+                            }}>
+                                ADMIN
+                            </span>
+                        </NavLink>
+
+                        <NavLink
+                            to="/billing"
+                            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                            style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}
+                        >
+                            <CreditCard size={20} />
+                            Planos & Pagamentos
                             <span style={{
                                 marginLeft: 'auto',
                                 fontSize: '0.65rem',
