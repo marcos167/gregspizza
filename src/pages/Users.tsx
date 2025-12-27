@@ -12,7 +12,7 @@ interface UserProfile {
     created_at: string;
 }
 
-const Users = () => {
+export default function Users() {
     const { isAdmin } = useAuth();
     const toast = useToast();
     const [users, setUsers] = useState<UserProfile[]>([]);

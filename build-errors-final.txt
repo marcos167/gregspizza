@@ -1,0 +1,26 @@
+﻿
+> gregspizza@0.0.0 build
+> tsc -b && vite build
+
+src/components/ProtectedRoute.tsx(10,37): error TS2339: Property 'profileLoading' does not exist on type 'AuthContextType'.
+src/components/ProtectedRoute.tsx(61,13): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/components/Sidebar.tsx(250,41): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/components/Sidebar.tsx(253,30): error TS2367: This comparison appears to be unintentional because the types 'UserRole' and '"admin"' have no overlap.
+src/pages/Signup.tsx(29,43): error TS2554: Expected 2 arguments, but got 3.
+src/pages/StockEntry.tsx(81,49): error TS2551: Property 'ingredient_name' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'. Did you mean 'ingredient_id'?
+src/pages/StockEntry.tsx(82,77): error TS2353: Object literal may only specify known properties, and 'ingredient_name' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/StockEntry.tsx(105,53): error TS2339: Property 'unit' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'.
+src/pages/StockEntry.tsx(106,81): error TS2353: Object literal may only specify known properties, and 'unit' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/StockEntry.tsx(120,49): error TS2339: Property 'category' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'.
+src/pages/StockEntry.tsx(121,77): error TS2353: Object literal may only specify known properties, and 'category' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/StockEntry.tsx(142,53): error TS2339: Property 'cost' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'.
+src/pages/StockEntry.tsx(143,81): error TS2353: Object literal may only specify known properties, and 'cost' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/StockEntry.tsx(155,53): error TS2339: Property 'cost_per_unit' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'.
+src/pages/StockEntry.tsx(156,81): error TS2353: Object literal may only specify known properties, and 'cost_per_unit' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/StockEntry.tsx(180,49): error TS2339: Property 'min_stock' does not exist on type '{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }'.
+src/pages/StockEntry.tsx(181,77): error TS2353: Object literal may only specify known properties, and 'min_stock' does not exist in type 'SetStateAction<{ ingredient_id: string; quantity: string; supplier: string; unit_cost: string; }>'.
+src/pages/TrashBin.tsx(10,13): error TS2339: Property 'items' does not exist on type '{ softDelete: (tableName: string, recordId: string) => Promise<boolean>; restore: (tableName: string, recordId: string) => Promise<boolean>; permanentDelete: (tableName: string, recordId: string) => Promise<...>; getTrashItems: () => Promise<...>; getTrashCount: () => Promise<...>; }'.
+src/pages/TrashBin.tsx(10,20): error TS2339: Property 'loading' does not exist on type '{ softDelete: (tableName: string, recordId: string) => Promise<boolean>; restore: (tableName: string, recordId: string) => Promise<boolean>; permanentDelete: (tableName: string, recordId: string) => Promise<...>; getTrashItems: () => Promise<...>; getTrashCount: () => Promise<...>; }'.
+src/pages/TrashBin.tsx(10,29): error TS2339: Property 'refreshTrash' does not exist on type '{ softDelete: (tableName: string, recordId: string) => Promise<boolean>; restore: (tableName: string, recordId: string) => Promise<boolean>; permanentDelete: (tableName: string, recordId: string) => Promise<...>; getTrashItems: () => Promise<...>; getTrashCount: () => Promise<...>; }'.
+src/pages/TrashBin.tsx(10,43): error TS2339: Property 'restoreItem' does not exist on type '{ softDelete: (tableName: string, recordId: string) => Promise<boolean>; restore: (tableName: string, recordId: string) => Promise<boolean>; permanentDelete: (tableName: string, recordId: string) => Promise<...>; getTrashItems: () => Promise<...>; getTrashCount: () => Promise<...>; }'.
+src/pages/TrashBin.tsx(141,46): error TS2304: Cannot find name 'AlertTriangle'.

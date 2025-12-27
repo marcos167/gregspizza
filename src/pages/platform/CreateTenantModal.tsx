@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Building2, Mail, Globe, CreditCard } from 'lucide-react';
+import { X, Building2, Mail, Globe } from 'lucide-react';
 import { useToast } from '../../contexts/ToastContext';
 import { supabase } from '../../lib/supabase';
 import './CreateTenantModal.css';
@@ -43,7 +43,7 @@ const CreateTenantModal = ({ onClose, onSuccess }: CreateTenantModalProps) => {
         setLoading(true);
         try {
             // Call enhanced auto-provisioning function
-            const { data, error } = await supabase.rpc('create_tenant_complete', {
+            const { error } = await supabase.rpc('create_tenant_complete', {
                 p_slug: formData.slug,
                 p_name: formData.name,
                 p_owner_email: formData.owner_email,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Trash2, RotateCcw, X } from 'lucide-react';
+import { Trash2, RotateCcw, X, AlertTriangle } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { useTrash, type TrashItem } from '../hooks/useTrash';
 import './TrashBin.css';

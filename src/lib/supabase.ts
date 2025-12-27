@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './database.types';
 
 // ============================================
 // CRITICAL SECURITY: Two Separate Clients
@@ -30,7 +29,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // TENANT CLIENT (Default)
 // ============================================
 // Use this for ALL tenant-scoped operations
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
         persistSession: true, // Persist session in localStorage
         autoRefreshToken: true, // Auto refresh token before it expires
@@ -54,7 +53,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 // - Any operation within tenant context
 
 export const supabaseAdmin = supabaseServiceKey
-    ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
+    ? createClient(supabaseUrl, supabaseServiceKey, {
         auth: {
             persistSession: false,
             autoRefreshToken: false,

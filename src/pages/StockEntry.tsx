@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Package, Plus } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { supabase, type Ingredient } from '../lib/supabase';
-import QuickIngredientModal from '../components/QuickIngredientModal';
+// import QuickIngredientModal from '../components/QuickIngredientModal';
 
 const StockEntry = () => {
     const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ const StockEntry = () => {
         setSubmitting(true);
 
         try {
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('stock_entries')
                 .insert({
                     ingredient_id: formData.ingredient_id,
