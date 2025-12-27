@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Building2, Users, DollarSign, TrendingUp, Eye, Pause, Play, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
-import { supabase, validateAdminClient } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import type { Tenant } from '../../contexts/TenantContext';
 import CreateTenantModal from './CreateTenantModal';
+import { TenantDetailsModal } from '../../components/platform/TenantDetailsModal';
 import './PlatformAdmin.css';
 
 interface TenantWithStats extends Tenant {
@@ -20,6 +21,7 @@ const PlatformAdmin = () => {
     const [tenants, setTenants] = useState<TenantWithStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [selectedTenant, setSelectedTenant] = useState<TenantWithStats | null>(null);
     const [stats, setStats] = useState({
         totalTenants: 0,
         activeTenants: 0,
