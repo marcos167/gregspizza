@@ -339,6 +339,7 @@ const PlatformAdmin = () => {
                                                 <div className="action-buttons">
                                                     <button
                                                         className="btn-icon"
+                                                        onClick={() => setSelectedTenant(tenant)}
                                                         title="Ver detalhes"
                                                     >
                                                         <Eye size={16} />
@@ -392,6 +393,18 @@ const PlatformAdmin = () => {
                         loadTenants();
                         loadStats();
                     }}
+                />
+            )}
+
+            {/* Tenant Details Modal */}
+            {selectedTenant && (
+                <TenantDetailsModal
+                    tenant={selectedTenant}
+                    onClose={() => setSelected Tenant(null)}
+            onUpdate={() => {
+                loadTenants();
+                loadStats();
+            }}
                 />
             )}
         </div>
